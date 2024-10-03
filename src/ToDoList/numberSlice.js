@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ToDoListDarkTheme } from "../Theme/ToDoListDarkTheme";
 import { ToDoListLightTheme } from "../Theme/ToDoListLightTheme";
 import { ToDoListPrimaryTheme } from "../Theme/ToDoListPrimaryTheme";
+import { message } from "antd";
 const initialState = {
   themeToDoList: ToDoListDarkTheme,
   inputToDo: "",
@@ -32,20 +33,24 @@ const numberSlice = createSlice({
       let textField = state.inputToDo;
       let taskToDo = state.taskToDo;
       if (textField.length === 0) {
-        alert("You have to type task name");
+        message.info("You have to type task name");
       } else {
         taskToDo.push(textField);
         state.inputToDo = "";
       }
     },
     handleEdit: (state, action) => {
-      state.storeIndex = action.payload;
+      let index = action.payload;
+      let input = state.inputToDo;
+      let Task = state.taskToDo;
+      state.storeIndex = index;
+      state.inputToDo = Task[index];
     },
     handleUpdate: (state) => {
       let indexStore = state.storeIndex;
       let change = state.taskToDo;
       if (state.inputToDo.length === 0) {
-        alert("You have to type task name");
+        message.info("You have to type task name");
       } else {
         change[indexStore] = state.inputToDo;
 
