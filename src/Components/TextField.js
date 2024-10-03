@@ -11,16 +11,16 @@ const Input = styled.input`
 `;
 
 const Label = styled.span`
- color: ${(props) => props.theme.color};
- width: auto
+  color: ${(props) => props.theme.color};
+  width: auto;
 `;
 
-
-export const TextField = (label, ...props}) => {
-    return <span>
-        <Label>
-            {label}
-        </Label>
-        <Input {...props} />
+export const TextField = ({ label, ...props }) => {
+  return (
+    <span>
+      <Label>{label}</Label>
+      <br />
+      <Input {...props} />
     </span>
-}
+  );
+};

@@ -5,5 +5,5 @@ export const ToDoListDarkTheme = {
   borderRadiusButton: "none",
   hoverTextColor: "#343a40",
   hoverBgColor: "#fff",
-  borderColor: "#343a40",
+  // borderColor: "1px solid #343a40 ",
 };
