@@ -2,6 +2,7 @@ import { Container } from "../Components/Container";
 import { ThemeProvider } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { Dropdown } from "../Components/Dropdown";
+import React, { useRef } from "react";
 import {
   Heading1,
   Heading2,
@@ -19,19 +20,30 @@ import {
   handleEdit,
   handleUpdate,
   handleDelete,
+  handleComplete,
+  handleDeleteCompleted,
 } from "./numberSlice";
 
 export default function ToDoList() {
-  let { themeToDoList, taskToDo, inputToDo, focus } = useSelector(
+  let { themeToDoList, taskToDo, inputToDo, taskCompleted } = useSelector(
     (state) => state.numberSlice
   );
   let dispatch = useDispatch();
+  const buttonRef = useRef(null);
+
   const handleChangeTheme = (event) => {
     dispatch(changeTheme(event.target.value));
   };
 
   const handleChangeInput = (event) => {
     dispatch(changeInput(event.target.value));
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      // Giả lập click nút "Add task" khi nhấn phím Enter
+      buttonRef.current.click();
+    }
   };
 
   const renderTaskToDo = () => {
@@ -41,14 +53,18 @@ export default function ToDoList() {
           <Th>Task name: {item}</Th>
           <Th className="text-end">
             <Button
-              style={{ backgroundColor: focus ? " blue" : "white" }}
               onClick={() => {
                 dispatch(handleEdit(index));
               }}
             >
               <i className="fa fa-edit"></i>
             </Button>
-            <Button className="mx-1">
+            <Button
+              onClick={() => {
+                dispatch(handleComplete(index));
+              }}
+              className="mx-1"
+            >
               <i className="fa fa-check"></i>
             </Button>
             <Button
@@ -63,6 +79,26 @@ export default function ToDoList() {
       );
     });
   };
+
+  const renderCompletedTask = () => {
+    return taskCompleted.map((item, index) => {
+      return (
+        <Tr key={index}>
+          <Th>Task name: {item}</Th>
+          <Th className="text-end">
+            <Button
+              onClick={() => {
+                dispatch(handleDeleteCompleted(index));
+              }}
+            >
+              <i className="fa fa-trash"></i>
+            </Button>
+          </Th>
+        </Tr>
+      );
+    });
+  };
+
   return (
     <ThemeProvider theme={themeToDoList}>
       <Container className="w-50">
@@ -73,82 +109,37 @@ export default function ToDoList() {
         </Dropdown>
         <Heading2 className="text-center">To Do List</Heading2>
         <TextField
+          onKeyDown={handleKeyDown}
           value={inputToDo}
           onChange={handleChangeInput}
           label="Task name "
           className=" w-50"
         ></TextField>
         <Button
+          ref={buttonRef}
           onClick={() => {
             dispatch(handleAddTask());
           }}
           className="mx-2"
         >
-          <i class="fa fa-plus"></i> Add task
+          <i className="fa fa-plus"></i> Add task
         </Button>
         <Button
           onClick={() => {
             dispatch(handleUpdate());
           }}
         >
-          <i class="fa fa-upload me-2"></i>
+          <i className="fa fa-upload me-2"></i>
           Update task
         </Button>
         <hr />
         <Heading3>Task to do</Heading3>
         <Table>
-          <Thead>
-            {renderTaskToDo()}
-            {/* <Tr>
-              <Th>Task name</Th>
-              <Th className="text-end">
-                <Button>
-                  <i className="fa fa-edit"></i>
-                </Button>
-                <Button className="mx-1">
-                  <i className="fa fa-check"></i>
-                </Button>
-                <Button>
-                  <i className="fa fa-trash"></i>
-                </Button>
-              </Th>
-            </Tr>
-            <Tr>
-              <Th>Task name</Th>
-              <Th className="text-end">
-                <Button>
-                  <i className="fa fa-edit"></i>
-                </Button>
-                <Button className="mx-1">
-                  <i className="fa fa-check"></i>
-                </Button>
-                <Button>
-                  <i className="fa fa-trash"></i>
-                </Button>
-              </Th>
-            </Tr> */}
-          </Thead>
+          <Thead>{renderTaskToDo()}</Thead>
         </Table>
         <Heading3 className="my-2">Task completed</Heading3>
         <Table>
-          <Thead>
-            <Tr>
-              <Th>Task name</Th>
-              <Th className="text-end">
-                <Button>
-                  <i className="fa fa-trash"></i>
-                </Button>
-              </Th>
-            </Tr>
-            <Tr>
-              <Th>Task name</Th>
-              <Th className="text-end">
-                <Button>
-                  <i className="fa fa-trash"></i>
-                </Button>
-              </Th>
-            </Tr>
-          </Thead>
+          <Thead>{renderCompletedTask()}</Thead>
         </Table>
       </Container>
     </ThemeProvider>

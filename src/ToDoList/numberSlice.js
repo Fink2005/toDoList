@@ -6,8 +6,8 @@ const initialState = {
   themeToDoList: ToDoListDarkTheme,
   inputToDo: "",
   taskToDo: [],
+  taskCompleted: [],
   storeIndex: 0,
-  focus: false,
 };
 
 const numberSlice = createSlice({
@@ -40,7 +40,6 @@ const numberSlice = createSlice({
     },
     handleEdit: (state, action) => {
       state.storeIndex = action.payload;
-      state.focus = true;
     },
     handleUpdate: (state) => {
       let indexStore = state.storeIndex;
@@ -49,7 +48,6 @@ const numberSlice = createSlice({
         alert("You have to type task name");
       } else {
         change[indexStore] = state.inputToDo;
-        state.focus = false;
 
         state.inputToDo = "";
       }
@@ -57,6 +55,18 @@ const numberSlice = createSlice({
     handleDelete: (state, action) => {
       console.log(action.payload);
       state.taskToDo.splice(action.payload, 1);
+    },
+    handleComplete: (state, action) => {
+      state.storeIndex = action.payload;
+      let index = state.storeIndex;
+      let toDo = state.taskToDo;
+      let valueToDo = toDo[index];
+      let completeValue = state.taskCompleted;
+      completeValue.push(valueToDo);
+      state.taskToDo.splice(action.payload, 1);
+    },
+    handleDeleteCompleted: (state, action) => {
+      state.taskCompleted.splice(action.payload, 1);
     },
     //   nơi update logic thayy đổi state
   },
@@ -68,6 +78,8 @@ export const {
   handleEdit,
   handleUpdate,
   handleDelete,
+  handleDeleteCompleted,
+  handleComplete,
 } = numberSlice.actions; //action
 
 export default numberSlice.reducer; // tên reducer
